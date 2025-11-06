@@ -4,21 +4,17 @@
   <meta charset="UTF-8" />
   <title>検索結果 | 料理検索</title>
   <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-    }
+    body { margin: 0; font-family: sans-serif; }
     header {
       background-color: #f4f4f4;
       padding: 10px 20px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .breadcrumb {
-      font-size: 0.9em;
-    }
+    .breadcrumb { font-size: 0.9em; margin-bottom: 10px; }
+    #category-selectors { display: flex; gap: 10px; }
+    select { padding: 5px; }
     #results {
       padding: 20px;
       display: grid;
@@ -46,71 +42,96 @@
       color: #007BFF;
       cursor: pointer;
     }
-    .favorite-btn {
-      font-size: 1.2em;
-      cursor: pointer;
-      color: #ccc;
-    }
-    .favorite-btn.favorited {
-      color: gold;
-    }
   </style>
 </head>
 <body>
 
 <header>
   <div class="breadcrumb"><a href="home.html">ホーム</a> > 検索結果</div>
+  <div id="category-selectors">
+    <select id="large"></select>
+    <select id="medium"></select>
+    <select id="small"></select>
+    <button id="searchBtn">このカテゴリで検索</button>
+  </div>
 </header>
 
-<div id="results">検索結果を読み込んでいます...</div>
+<div id="results">カテゴリを選択して検索してください。</div>
 
 <script>
-  const recipes = [
-    {
-      name: "トマトスパゲッティ",
-      image: "./gazou/トマトスパゲッティ.webp",
-      ingredients: ["トマト", "スパゲッティ", "にんにく", "オリーブオイル", "塩", "こしょう"]
-    },
-    {
-      name: "トマトカプレーゼ",
-      image: "./gazou/カプレーゼ.webp",
-      ingredients: ["完熟トマト", "フレッシュモッツァレラ", "バジル", "オリーブオイル"]
-    },
-    {
-      name: "鶏の照り焼き",
-      image: "https://source.unsplash.com/300x200/?chicken,teriyaki",
-      ingredients: ["鶏肉", "醤油", "みりん", "砂糖", "酒"]
-    }
-    // 必要に応じて追加
-  ];
+  const APP_ID = "あなたのアプリIDをここに"; // ← 楽天アプリIDを記入
 
-  const params = new URLSearchParams(location.search);
-  const query = params.get("query")?.toLowerCase() || "";
+  const largeSel = document.getElementById("large");
+  const mediumSel = document.getElementById("medium");
+  const smallSel = document.getElementById("small");
   const resultsDiv = document.getElementById("results");
 
-  function showResults() {
-    const filtered = recipes.filter(r =>
-      r.name.includes(query) || r.ingredients.some(i => i.includes(query))
-    );
+  // カテゴリ一覧をロード
+  async function loadCategories() {
+    const url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryList/20170426?applicationId=${APP_ID}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const { large, medium, small } = data.result;
 
-    if (filtered.length === 0) {
-      resultsDiv.innerHTML = `<p>「${query}」に一致するレシピが見つかりませんでした。</p>`;
+    // 大カテゴリ設定
+    largeSel.innerHTML = `<option value="">大カテゴリを選択</option>`;
+    large.forEach(c => {
+      largeSel.innerHTML += `<option value="${c.categoryId}">${c.categoryName}</option>`;
+    });
+
+    // イベント設定
+    largeSel.addEventListener("change", () => {
+      mediumSel.innerHTML = `<option value="">中カテゴリを選択</option>`;
+      const mids = medium.filter(m => m.parentCategoryId === largeSel.value);
+      mids.forEach(m => {
+        mediumSel.innerHTML += `<option value="${m.categoryId}">${m.categoryName}</option>`;
+      });
+      smallSel.innerHTML = `<option value="">小カテゴリを選択</option>`;
+    });
+
+    mediumSel.addEventListener("change", () => {
+      smallSel.innerHTML = `<option value="">小カテゴリを選択</option>`;
+      const smalls = small.filter(s => s.parentCategoryId === mediumSel.value);
+      smalls.forEach(s => {
+        smallSel.innerHTML += `<option value="${s.categoryId}">${s.categoryName}</option>`;
+      });
+    });
+  }
+
+  // レシピ検索
+  async function searchRecipes() {
+    const categoryId = smallSel.value || mediumSel.value || largeSel.value;
+    if (!categoryId) {
+      alert("カテゴリを選択してください");
+      return;
+    }
+
+    resultsDiv.innerHTML = "検索中...";
+    const url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=${APP_ID}&categoryId=${categoryId}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.result || data.result.length === 0) {
+      resultsDiv.innerHTML = "該当するレシピがありません。";
       return;
     }
 
     resultsDiv.innerHTML = "";
-    filtered.forEach(recipe => {
+    data.result.forEach(r => {
       const div = document.createElement("div");
       div.className = "recipe";
       div.innerHTML = `
-        <img src="${recipe.image}" alt="${recipe.name}">
-        <div class="recipe-title" onclick="location.href='detail.html?name=${encodeURIComponent(recipe.name)}'">${recipe.name}</div>
+        <img src="${r.foodImageUrl}" alt="${r.recipeTitle}">
+        <div class="recipe-title" onclick="window.open('${r.recipeUrl}', '_blank')">
+          ${r.recipeTitle}
+        </div>
       `;
       resultsDiv.appendChild(div);
     });
   }
 
-  showResults();
+  document.getElementById("searchBtn").addEventListener("click", searchRecipes);
+  loadCategories();
 </script>
 </body>
 </html>
