@@ -1,106 +1,117 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>詳細表示 | 料理検索</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-    }
-    header {
-      background-color: #f4f4f4;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .breadcrumb {
-      font-size: 0.9em;
-    }
-    main {
-      padding: 30px;
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-    }
-    img {
-      width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
-    h2 {
-      color: #007BFF;
-    }
-    ul, ol {
-      padding-left: 20px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <title>詳細表示 | 料理検索</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        header {
+            background-color: #f4f4f4;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            font-size: 0.9em;
+        }
+
+        main {
+            padding: 30px;
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+        }
+
+        img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #007BFF;
+        }
+
+        ul,
+        ol {
+            padding-left: 20px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
+
 <body>
 
-<header>
-  <div class="breadcrumb"><a href="home.html">ホーム</a> > <a href="javascript:history.back()">検索結果</a> > 詳細</div>
-</header>
+    <header>
+        <div class="breadcrumb"><a href="home.html">ホーム</a> > <a href="javascript:history.back()">検索結果</a> > 詳細</div>
+    </header>
 
-<main>
-  <div id="content">読み込み中...</div>
-  <button onclick="history.back()">戻る</button>
-</main>
+    <main>
+        <div id="content">読み込み中...</div>
+        <button onclick="history.back()">戻る</button>
+    </main>
 
-<script>
-  const recipes = {
-    "トマトスパゲッティ": {
-      image: "./gazou/トマトスパゲッティ.webp",
-      ingredients: ["トマト", "スパゲッティ", "にんにく", "オリーブオイル", "塩", "こしょう"],
-      instructions: [
-        "スパゲッティを茹でる。",
-        "にんにくとトマトを炒める。",
-        "塩こしょうで味付け。"
-      ]
-    },
-    "トマトカプレーゼ": {
-      image: "./gazou/カプレーゼ.webp",
-      ingredients: ["トマト", "モッツァレラ", "バジル", "オリーブオイル"],
-      instructions: [
-        "材料をスライスして並べる。",
-        "オリーブオイルをかける。"
-      ]
-    },
-    "鶏の照り焼き": {
-      image: "https://source.unsplash.com/300x200/?chicken,teriyaki",
-      ingredients: ["鶏肉", "醤油", "みりん", "砂糖", "酒"],
-      instructions: [
-        "鶏肉を焼く。",
-        "タレを加えて煮詰める。"
-      ]
-    }
-  };
+    <script>
+        const recipes = {
+            "トマトスパゲッティ": {
+                image: "./gazou/トマトスパゲッティ.webp",
+                ingredients: ["トマト", "スパゲッティ", "にんにく", "オリーブオイル", "塩", "こしょう"],
+                instructions: [
+                    "スパゲッティを茹でる。",
+                    "にんにくとトマトを炒める。",
+                    "塩こしょうで味付け。"
+                ]
+            },
+            "トマトカプレーゼ": {
+                image: "./gazou/カプレーゼ.webp",
+                ingredients: ["トマト", "モッツァレラ", "バジル", "オリーブオイル"],
+                instructions: [
+                    "材料をスライスして並べる。",
+                    "オリーブオイルをかける。"
+                ]
+            },
+            "鶏の照り焼き": {
+                image: "https://source.unsplash.com/300x200/?chicken,teriyaki",
+                ingredients: ["鶏肉", "醤油", "みりん", "砂糖", "酒"],
+                instructions: [
+                    "鶏肉を焼く。",
+                    "タレを加えて煮詰める。"
+                ]
+            }
+        };
 
-  const params = new URLSearchParams(location.search);
-  const name = params.get("name");
-  const data = recipes[name];
+        const params = new URLSearchParams(location.search);
+        const name = params.get("name");
+        const data = recipes[name];
 
-  const content = document.getElementById("content");
+        const content = document.getElementById("content");
 
-  if (!data) {
-    content.innerHTML = "<p>レシピ情報が見つかりません。</p>";
-  } else {
-    content.innerHTML = `
+        if (!data) {
+            content.innerHTML = "<p>レシピ情報が見つかりません。</p>";
+        } else {
+            content.innerHTML = `
       <h2>${name}</h2>
       <img src="${data.image}" alt="${name}">
       <h3>材料</h3>
@@ -108,7 +119,8 @@
       <h3>作り方</h3>
       <ol>${data.instructions.map(i => `<li>${i}</li>`).join("")}</ol>
     `;
-  }
-</script>
+        }
+    </script>
 </body>
+
 </html>
