@@ -104,7 +104,7 @@
             // イベント設定
             largeSel.addEventListener("change", () => {
                 mediumSel.innerHTML = `<option value="">中カテゴリを選択</option>`;
-                const mids = medium.filter(m => m.parentCategoryId === largeSel.value);
+                const mids = medium.filter(m => m.parentCategoryId == largeSel.value);
                 mids.forEach(m => {
                     mediumSel.innerHTML += `<option value="${m.categoryId}">${m.categoryName}</option>`;
                 });
@@ -113,7 +113,7 @@
 
             mediumSel.addEventListener("change", () => {
                 smallSel.innerHTML = `<option value="">小カテゴリを選択</option>`;
-                const smalls = small.filter(s => s.parentCategoryId === mediumSel.value);
+                const smalls = small.filter(s => s.parentCategoryId == mediumSel.value);
                 smalls.forEach(s => {
                     smallSel.innerHTML += `<option value="${s.categoryId}">${s.categoryName}</option>`;
                 });
@@ -122,18 +122,29 @@
 
         // レシピ検索
         async function searchRecipes() {
-            const categoryId = smallSel.value || mediumSel.value || largeSel.value;
-            if (!categoryId) {
+            const largeId = largeSel.value;
+            const mediumId = mediumSel.value;
+            const smallId = smallSel.value;
+
+            // categoryIdの組み立て
+            let categoryId = "";
+            if (smallId) {
+                categoryId = `${largeId}-${mediumId}-${smallId}`;
+            } else if (mediumId) {
+                categoryId = `${largeId}-${mediumId}`;
+            } else if (largeId) {
+                categoryId = largeId;
+            } else {
                 alert("カテゴリを選択してください");
                 return;
             }
 
             console.log("選択カテゴリID:", categoryId);
-
             resultsDiv.innerHTML = "検索中...";
 
             const url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=1087309467994310101&categoryId=${categoryId}`;
             console.log("API URL:", url);
+
             try {
                 const res = await fetch(url);
                 const data = await res.json();
@@ -147,18 +158,19 @@
                 data.result.forEach(r => {
                     const div = document.createElement("div");
                     div.className = "recipe";
-                    div.innerHTML = `<img src="${r.foodImageUrl}" alt="${r.recipeTitle}"><div class="recipe-title" onclick="window.open('${r.recipeUrl}', '_blank')">${r.recipeTitle}</div>`;
+                    div.innerHTML = `
+                <img src="${r.foodImageUrl}" alt="${r.recipeTitle}">
+                <div class="recipe-title" onclick="window.open('${r.recipeUrl}', '_blank')">${r.recipeTitle}</div>`;
                     resultsDiv.appendChild(div);
                 });
-            }
-            catch (e) {
+            } catch (e) {
                 console.error("APIエラー:", e);
                 resultsDiv.innerHTML = "レシピの取得に失敗しました。";
             }
         }
 
-            document.getElementById("searchBtn").addEventListener("click", searchRecipes);
-            loadCategories();
+        document.getElementById("searchBtn").addEventListener("click", searchRecipes);
+        loadCategories();
     </script>
 </body>
 
