@@ -10,6 +10,10 @@
             font-family: sans-serif;
         }
 
+        h2 {
+            font-size: 50px;
+        }
+
         header {
             background-color: #f4f4f4;
             padding: 10px 20px;
@@ -51,6 +55,43 @@
             padding: 40px;
             text-align: center;
         }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px; /* ボタン間のスペース */
+            margin-top: 20px; /* h2との間隔 */
+        }
+
+        .action-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 250px;
+            margin: 0; /* 中央寄せは親要素に任せる */
+            padding: .9em 2em;
+            border: 1px solid #ff7b0f;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #ff7b0f;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            border: none;
+            background-color: #ff7b0f;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        /* 以前のお気に入りリスト表示機能は削除し、ボタン遷移に置き換えます */
+        #favoritesSection {
+            margin-top: 50px;
+            border-top: 1px solid #ccc;
+            padding-top: 30px;
+            display: none; /* home.htmlではボタン遷移に変更したため非表示 */
+        }
     </style>
 </head>
 
@@ -65,8 +106,18 @@
     <main>
         <h2>お気に入りのレシピを探しましょう！</h2>
         <p>右上の検索ボックスから料理名や材料で検索できます。</p>
-        <button id="categoryBtn">カテゴリー検索</button>
+        
+        <div class="button-container">
+            <button class="action-button" id="categoryBtn">カテゴリー検索</button>
+            <button class="action-button" id="favoritesBtn">お気に入りリスト</button>
+        </div>
+        
+        <section id="favoritesSection">
+            <h2>お気に入りレシピ</h2>
+            <div id="favoritesList"></div>
+        </section>
     </main>
+
 
     <script>
         document.getElementById("searchForm").addEventListener("submit", function (e) {
@@ -78,12 +129,17 @@
             }
             window.location.href = `kensaku.html?query=${encodeURIComponent(query)}`;
         });
-        document.getElementById("categoryBtn").addEventListener("click",()=>{
-            window.location.href="category.html"
+        
+        // カテゴリー検索ボタンのイベント
+        document.getElementById("categoryBtn").addEventListener("click", () => {
+            window.location.href = "category.html"
+        });
+
+        // ★追加：お気に入りリストボタンのイベント
+        document.getElementById("favoritesBtn").addEventListener("click", () => {
+            window.location.href = "okiniiri.html"
         });
     </script>
 </body>
 
 </html>
-
-

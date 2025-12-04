@@ -35,8 +35,15 @@
         #results {
             padding: 20px;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            #results {
+                grid-template-columns: repeat(1, 1fr);
+                /* スマホは1列 */
+            }
         }
 
         .recipe {
@@ -47,11 +54,13 @@
             display: flex;
             flex-direction: column;
             cursor: default;
+            position: relative;
+            /* お気に入りボタンの位置調整用 */
         }
 
         .recipe img {
             width: 100%;
-            height: 200px;
+            height: 300px;
             object-fit: cover;
             border-radius: 4px;
             margin-bottom: 10px;
@@ -61,6 +70,47 @@
             font-weight: bold;
             color: #007BFF;
             cursor: pointer;
+            margin-bottom: 10px; /* ボタンと区別 */
+        }
+
+        .category {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 400px;
+            height: 50px;
+            margin: 0 auto;
+            padding: .3em 5em;
+            border: 1px solid #ff7b0f;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #ff7b0f;
+            font-size: 1em;
+        }
+
+        .category:hover {
+            border: none;
+            background-color: #ff7b0f;
+            color: #fff;
+            font-weight: 600px;
+        }
+
+        /* ★追加：お気に入りボタンのスタイル */
+        .favorite-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #ccc; /* 通常のハートの色 */
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            padding: 5px; /* クリックしやすいように */
+        }
+
+        .favorite-btn.is-favorited {
+            color: #ff4500; /* お気に入り済みのハートの色（オレンジレッド） */
         }
     </style>
 </head>
@@ -74,7 +124,7 @@
             <select id="large"></select>
             <select id="medium"></select>
             <select id="small"></select>
-            <button id="searchBtn">このカテゴリで検索</button>
+            <button class="category" id="searchBtn">このカテゴリで検索</button>
         </div>
     </header>
 
@@ -82,15 +132,56 @@
 
     <script>
         const APP_ID = "1087309467994310101"; // ← 楽天アプリIDを記入
+        const FAVORITES_KEY = "recipeFavorites"; // ローカルストレージのキー
 
         const largeSel = document.getElementById("large");
         const mediumSel = document.getElementById("medium");
         const smallSel = document.getElementById("small");
         const resultsDiv = document.getElementById("results");
 
+        // ローカルストレージからお気に入りデータを取得する関数
+        function getFavorites() {
+            try {
+                const favorites = localStorage.getItem(FAVORITES_KEY);
+                return favorites ? JSON.parse(favorites) : {};
+            } catch (e) {
+                console.error("ローカルストレージからの読み込みエラー:", e);
+                return {};
+            }
+        }
+
+        // ローカルストレージにお気に入りデータを保存する関数
+        function saveFavorites(favorites) {
+            try {
+                localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+            } catch (e) {
+                console.error("ローカルストレージへの書き込みエラー:", e);
+            }
+        }
+
+        // お気に入り状態をトグルする関数
+        function toggleFavorite(recipeId, recipeTitle, recipeUrl, foodImageUrl, buttonElement) {
+            const favorites = getFavorites();
+            const isFavorited = !!favorites[recipeId];
+
+            if (isFavorited) {
+                // お気に入りから削除
+                delete favorites[recipeId];
+                buttonElement.classList.remove("is-favorited");
+                alert(`${recipeTitle}をお気に入りから削除しました。`);
+            } else {
+                // お気に入りに追加
+                favorites[recipeId] = { recipeTitle, recipeUrl, foodImageUrl };
+                buttonElement.classList.add("is-favorited");
+                alert(`${recipeTitle}をお気に入りに追加しました！`);
+            }
+
+            saveFavorites(favorites);
+        }
+
         // カテゴリ一覧をロード
         async function loadCategories() {
-            const url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryList/20170426?applicationId=1087309467994310101`;
+            const url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryList/20170426?applicationId=${APP_ID}`;
             const res = await fetch(url);
             const data = await res.json();
             const { large, medium, small } = data.result;
@@ -142,12 +233,13 @@
             console.log("選択カテゴリID:", categoryId);
             resultsDiv.innerHTML = "検索中...";
 
-            const url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=1087309467994310101&categoryId=${categoryId}`;
+            const url = `https://app.rakuten.co.jp/services/api/Recipe/CategoryRanking/20170426?applicationId=${APP_ID}&categoryId=${categoryId}`;
             console.log("API URL:", url);
 
             try {
                 const res = await fetch(url);
                 const data = await res.json();
+                const favorites = getFavorites(); // お気に入りデータを取得
 
                 if (!data.result || data.result.length === 0) {
                     resultsDiv.innerHTML = "該当するレシピがありません。";
@@ -156,13 +248,37 @@
 
                 resultsDiv.innerHTML = "";
                 data.result.forEach(r => {
+                    const isFavorited = !!favorites[r.recipeId]; // お気に入り済みかチェック
+                    const favoriteClass = isFavorited ? "is-favorited" : "";
+
                     const div = document.createElement("div");
                     div.className = "recipe";
                     div.innerHTML = `
                 <img src="${r.foodImageUrl}" alt="${r.recipeTitle}">
-                <div class="recipe-title" onclick="window.open('${r.recipeUrl}', '_blank')">${r.recipeTitle}</div>`;
+                <div class="recipe-title" onclick="window.open('${r.recipeUrl}', '_blank')">${r.recipeTitle}</div>
+                <button 
+                    class="favorite-btn ${favoriteClass}"
+                    data-recipe-id="${r.recipeId}"
+                    data-recipe-title="${r.recipeTitle.replace(/"/g, '&quot;')}"
+                    data-recipe-url="${r.recipeUrl}"
+                    data-food-image-url="${r.foodImageUrl}"
+                    aria-label="${isFavorited ? 'お気に入りから削除' : 'お気に入りに追加'}"
+                >
+                    &#x2764; </button>`;
                     resultsDiv.appendChild(div);
                 });
+
+                // 新しく生成されたボタンにイベントリスナーを設定
+                resultsDiv.querySelectorAll(".favorite-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                        const recipeId = this.dataset.recipeId;
+                        const recipeTitle = this.dataset.recipeTitle;
+                        const recipeUrl = this.dataset.recipeUrl;
+                        const foodImageUrl = this.dataset.foodImageUrl;
+                        toggleFavorite(recipeId, recipeTitle, recipeUrl, foodImageUrl, this);
+                    });
+                });
+
             } catch (e) {
                 console.error("APIエラー:", e);
                 resultsDiv.innerHTML = "レシピの取得に失敗しました。";
