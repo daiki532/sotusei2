@@ -10,6 +10,11 @@
             font-family: sans-serif;
         }
 
+        a {
+            text-decoration: none;
+        }
+
+
         header {
             background-color: #f4f4f4;
             padding: 10px 20px;
@@ -70,7 +75,8 @@
             font-weight: bold;
             color: #007BFF;
             cursor: pointer;
-            margin-bottom: 10px; /* ボタンと区別 */
+            margin-bottom: 10px;
+            /* ボタンと区別 */
         }
 
         .category {
@@ -95,22 +101,48 @@
             font-weight: 600px;
         }
 
+        .action-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 400px;
+            height: 50px;
+            margin: 0 auto;
+            padding: .3em 5em;
+            border: 1px solid #ff7b0f;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #ff7b0f;
+            font-size: 1em;
+        }
+
+        .action-button:hover {
+            border: none;
+            background-color: #ff7b0f;
+            color: #fff;
+            font-weight: 600px;
+
+        }
+
         /* ★追加：お気に入りボタンのスタイル */
         .favorite-btn {
             background: none;
             border: none;
             cursor: pointer;
             font-size: 24px;
-            color: #ccc; /* 通常のハートの色 */
+            color: #ccc;
+            /* 通常のハートの色 */
             position: absolute;
             top: 15px;
             right: 15px;
             z-index: 10;
-            padding: 5px; /* クリックしやすいように */
+            padding: 5px;
+            /* クリックしやすいように */
         }
 
         .favorite-btn.is-favorited {
-            color: #ff4500; /* お気に入り済みのハートの色（オレンジレッド） */
+            color: #ff4500;
+            /* お気に入り済みのハートの色（オレンジレッド） */
         }
     </style>
 </head>
@@ -124,7 +156,11 @@
             <select id="large"></select>
             <select id="medium"></select>
             <select id="small"></select>
+            <div align="right">
             <button class="category" id="searchBtn">このカテゴリで検索</button>
+            </div>
+            <a href="okiniiri.html"><button class="action-button" id="favoritesBtn">お気に入りリスト</button></a>
+
         </div>
     </header>
 
@@ -270,7 +306,7 @@
 
                 // 新しく生成されたボタンにイベントリスナーを設定
                 resultsDiv.querySelectorAll(".favorite-btn").forEach(button => {
-                    button.addEventListener("click", function() {
+                    button.addEventListener("click", function () {
                         const recipeId = this.dataset.recipeId;
                         const recipeTitle = this.dataset.recipeTitle;
                         const recipeUrl = this.dataset.recipeUrl;
