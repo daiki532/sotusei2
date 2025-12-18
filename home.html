@@ -14,6 +14,26 @@
             font-size: 50px;
         }
 
+        .ai-float {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .ai-float img {
+            width: 150px;
+            height: auto;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .ai-float img:hover {
+            transform: scale(1.05);
+        }
+
         header {
             background-color: #f4f4f4;
             padding: 10px 20px;
@@ -60,8 +80,10 @@
         .button-container {
             display: flex;
             justify-content: center;
-            gap: 20px; /* ボタン間のスペース */
-            margin-top: 20px; /* h2との間隔 */
+            gap: 20px;
+            /* ボタン間のスペース */
+            margin-top: 20px;
+            /* h2との間隔 */
         }
 
         .action-button {
@@ -69,7 +91,8 @@
             justify-content: center;
             align-items: center;
             width: 250px;
-            margin: 0; /* 中央寄せは親要素に任せる */
+            margin: 0;
+            /* 中央寄せは親要素に任せる */
             padding: .9em 2em;
             border: 1px solid #ff7b0f;
             border-radius: 5px;
@@ -85,13 +108,14 @@
             color: #fff;
             font-weight: 600;
         }
-        
+
         /* 以前のお気に入りリスト表示機能は削除し、ボタン遷移に置き換えます */
         #favoritesSection {
             margin-top: 50px;
             border-top: 1px solid #ccc;
             padding-top: 30px;
-            display: none; /* home.htmlではボタン遷移に変更したため非表示 */
+            display: none;
+            /* home.htmlではボタン遷移に変更したため非表示 */
         }
     </style>
 </head>
@@ -103,17 +127,21 @@
             <input type="text" id="searchInput" placeholder="材料や料理名を入力" />
             <button type="submit" id="searchBtn">検索</button>
         </form>
+
     </header>
     <main>
         <h2>お気に入りのレシピを探しましょう！</h2>
         <p>右上の検索ボックスから料理名や材料で検索できます。</p>
-        
+
         <div class="button-container">
             <button class="action-button" id="categoryBtn">カテゴリー検索</button>
             <button class="action-button" id="favoritesBtn">お気に入りリスト</button>
             <button class="action-button" id="syokuzaiBtn">食材管理</button>
         </div>
-        
+        <a class="ai-float" href="chatbot.html">
+            <img src="./ai_img/unnamed.png" alt="AIチャットボット">
+        </a>
+
         <section id="favoritesSection">
             <h2>お気に入りレシピ</h2>
             <div id="favoritesList"></div>
@@ -131,7 +159,7 @@
             }
             window.location.href = `kensaku.html?query=${encodeURIComponent(query)}`;
         });
-        
+
         // カテゴリー検索ボタンのイベント
         document.getElementById("categoryBtn").addEventListener("click", () => {
             window.location.href = "category.html"
@@ -142,7 +170,7 @@
             window.location.href = "okiniiri.html"
         });
 
-                document.getElementById("syokuzaiBtn").addEventListener("click", () => {
+        document.getElementById("syokuzaiBtn").addEventListener("click", () => {
             window.location.href = "management.html"
         });
     </script>
