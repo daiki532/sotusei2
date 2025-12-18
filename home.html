@@ -39,16 +39,17 @@
         #searchBtn {
             padding: 6px 15px;
             font-size: 1em;
-            border: 1px solid #ccc;
+            border: 1px solid #ff7b0f;
             border-left: none;
             border-radius: 0 4px 4px 0;
-            background-color: #007BFF;
-            color: white;
+            background-color: white;
+            color: #ff7b0f;
             cursor: pointer;
         }
 
         #searchBtn:hover {
-            background-color: #0056b3;
+            background-color: #ff7b0f;
+            color: white;
         }
 
         main {
@@ -110,6 +111,7 @@
         <div class="button-container">
             <button class="action-button" id="categoryBtn">カテゴリー検索</button>
             <button class="action-button" id="favoritesBtn">お気に入りリスト</button>
+            <button class="action-button" id="syokuzaiBtn">食材管理</button>
         </div>
         
         <section id="favoritesSection">
@@ -138,6 +140,10 @@
         // ★追加：お気に入りリストボタンのイベント
         document.getElementById("favoritesBtn").addEventListener("click", () => {
             window.location.href = "okiniiri.html"
+        });
+
+                document.getElementById("syokuzaiBtn").addEventListener("click", () => {
+            window.location.href = ".html"
         });
     </script>
 </body>
