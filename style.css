@@ -1,20 +1,20 @@
 body {
   margin: 0;
   padding: 0;
-  background: #f5f6fa;
+  background: #fff8e9;
   font-family: "Segoe UI", sans-serif;
   color: #333;
 }
 
 .breadcrumb {
   font-size: 0.9em;
-  margin-right: 20px;
+  margin: 10px 0 10px 10px;
 }
 
 .top h1 {
   padding: 25px 0;
   text-align: center;
-  font-size: 26px;
+  font-size: 40px;
   font-weight: 600;
   color: #333;
 }
@@ -29,7 +29,7 @@ body {
 }
 
 .form-group {
-  margin-bottom: 14px;
+  margin: 0 20px 20px 0;
 }
 
 label {
@@ -57,27 +57,33 @@ select {
 
 /* ボタン */
 .btn-main {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  background: #4c8bf5;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  margin: 0;
+  /* 中央寄せは親要素に任せる */
+  padding: .9em 2em;
+  border: 1px solid #ff7b0f;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #ff7b0f;
+  font-size: 1em;
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .btn-main:hover {
-  background: #3b73d6;
+  border: none;
+  background-color: #ff7b0f;
+  color: #fff;
+  font-weight: 600;
 }
 
 .btn-sub {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
-  background: #777;
+  background: #ff7b0f;
   color: #fff;
   border: none;
   border-radius: 12px;
