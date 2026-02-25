@@ -155,17 +155,25 @@ select {
   margin-top: 2px;
 }
 
-.badge-soon {
+.badge-expired,
+.badge-warning {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: #ff7878;
   color: white;
   padding: 6px 12px;
   font-size: 12px;
   border-radius: 16px;
+  font-weight: 600;
 }
 
+.badge-expired {
+  background: #e53935;
+}
+
+.badge-warning {
+  background: #ff9800;
+}
 /* 編集・削除ボタン */
 .actions {
   margin-top: 15px;
