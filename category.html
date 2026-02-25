@@ -31,14 +31,25 @@
 
         #category-selectors {
             display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .select-row {
+            display: flex;
             gap: 10px;
+        }
+
+        .button-row {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         select {
             padding: 10px;
             font-size: 20px;
         }
-
 
         #results {
             padding: 20px;
@@ -82,19 +93,17 @@
             /* ボタンと区別 */
         }
 
-        .category {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .category,
+        .action-button {
             width: 400px;
             height: 50px;
-            margin: 0 auto;
             padding: .3em 5em;
             border: 1px solid #ff7b0f;
             border-radius: 5px;
             background-color: #fff;
             color: #ff7b0f;
             font-size: 1em;
+            margin: 0;
         }
 
         .category:hover {
@@ -104,20 +113,6 @@
             font-weight: 600px;
         }
 
-        .action-button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 400px;
-            height: 50px;
-            margin: 0 auto;
-            padding: .3em 5em;
-            border: 1px solid #ff7b0f;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #ff7b0f;
-            font-size: 1em;
-        }
 
         .action-button:hover {
             border: none;
@@ -156,13 +151,20 @@
         <div class="breadcrumb"><a href="home.html">ホーム</a> > カテゴリー検索</div>
         <h1>カテゴリー検索</h1>
         <div id="category-selectors">
-            <select id="large"></select>
-            <select id="medium"></select>
-            <select id="small"></select>
-            <div align="right">
-            <button class="category" id="searchBtn">このカテゴリで検索</button>
-            <a href="okiniiri.html"><button class="action-button" id="favoritesBtn">お気に入りリスト</button></a>
+
+            <div class="select-row">
+                <select id="large"></select>
+                <select id="medium"></select>
+                <select id="small"></select>
             </div>
+
+            <div class="button-row">
+                <button class="category" id="searchBtn">このカテゴリで検索</button>
+                <a href="okiniiri.html">
+                    <button class="action-button" id="favoritesBtn">お気に入りリスト</button>
+                </a>
+            </div>
+
         </div>
     </header>
 
@@ -329,6 +331,3 @@
 </body>
 
 </html>
-
-
-
