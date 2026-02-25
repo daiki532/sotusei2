@@ -63,8 +63,12 @@ function render() {
 
     let badgeHtml = "";
     if (d !== null) {
-      if (d <= 0) badgeHtml = `<div class="badge-soon">期限切れ</div>`;
-      else if (d <= 7) badgeHtml = `<div class="badge-soon">あと ${d} 日</div>`;
+      if (d <= 0){
+        badgeHtml = `<div class="badge-expired">期限切れ</div>`;
+      }
+      else if (d <= 7){
+        badgeHtml = `<div class="badge-warning">あと ${d} 日</div>`;
+     }
     }
 
     const remainText =
